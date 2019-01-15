@@ -48,7 +48,7 @@ WORKDIR /app
 RUN lein deps
 
 
-ADD https://raw.githubusercontent.com/Commonfare-net/social-wallet-api/master/docker/supervisord.conf\ 
+ADD https://raw.githubusercontent.com/dyne/docker-dyne-software/master/social-wallet-api/supervisord.conf \ 
 	/etc/supervisor/supervisord.conf
 RUN sed -i "s/nodaemon=true/nodaemon=$foreground/" /etc/supervisor/supervisord.conf
 
