@@ -6,8 +6,8 @@
 #   docker run -p 3000:3000 -it dyne/social-wallet-api:latest
 #
 
-FROM dyne/clojure
-ENV debian buster
+FROM dyne/clojure:latest
+ENV debian stretch
 
 LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
 	  homepage="https://github.com/commonfare-net/social-wallet-api"
@@ -25,7 +25,7 @@ ENV LEIN_VERSION=2.8.1 \
 # Nodejs repository
 ADD https://deb.nodesource.com/gpgkey/nodesource.gpg.key nodesource.gpg.key
 RUN apt-key add nodesource.gpg.key
-RUN	echo "deb https://deb.nodesource.com/node_8.x $debian main" \
+RUN	echo "deb http://deb.nodesource.com/node_8.x $debian main" \
 	>> /etc/apt/sources.list
 
 
