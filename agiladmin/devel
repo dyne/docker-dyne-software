@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if test "$1" = ""; then
+   echo "usage: ./devel path-to-agiladmin-source"
+   return 1
+fi
+
+src=$1
+shift 1
+docker run -p 3000:3000 --mount type=bind,source="$src",destination=/app -it dyne/agiladmin:latest $*

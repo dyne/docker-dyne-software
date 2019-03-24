@@ -1,6 +1,6 @@
 #
 # Build this image with the command
-#   docker build -f docker/build -t dyne/clojure/agiladmin:latest
+#   docker build -t dyne/clojure/agiladmin:latest .
 #
 # Then run with the command
 #   docker run -p 3000:3000 -it dyne/clojure/agiladmin:latest
