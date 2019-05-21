@@ -1,0 +1,11 @@
+#!/bin/sh
+
+
+if test "$1" = ""; then
+   echo "usage: ./devel path-to-tomb-source"
+   return 1
+fi
+
+src=$1
+shift 1
+docker run --privileged --mount type=bind,source="$src",destination=/Tomb -it dyne/tomb:latest $*
