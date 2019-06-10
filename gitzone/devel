@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if test "$1" = ""; then
+   echo "usage: ./devel path-to-source"
+   return 1
+fi
+
+src=$1
+shift 1
+docker run -p 2222:2222 -p 5353/udp:5353/udp --mount type=bind,source="$src",destination=/app -it dyne/gitzone:latest $*
