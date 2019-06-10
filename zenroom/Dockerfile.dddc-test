@@ -1,0 +1,21 @@
+# Zenroom DDDC petition contract test
+# uses nightly build of amd64-static
+# and contracts documented here (using Coconut crypto scheme)
+# https://github.com/DECODEproject/dddc-pilot-contracts
+
+FROM dyne/devuan:ascii
+ENV debian stretch
+
+LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
+	  homepage="https://github.com/decodeproject/zenroom"
+
+ENV LC_ALL C
+ENV DEBIAN_FRONTEND noninteractive
+ENV CI=https://sdk.dyne.org:4443/view/decode/job/zenroom-static-amd64
+
+RUN wget --no-check-certificate $CI/lastSuccessfulBuild/artifact/src/zenroom-static \
+	&& mv zenroom-static /usr/local/bin/zenroom && chmod +x /usr/local/bin/zenroom
+RUN git clone https://github.com/DECODEproject/dddc-pilot-contracts /contracts
+RUN ln -s /contracts/src /src
+WORKDIR /contracts
+CMD ./test/run.sh
