@@ -1,5 +1,5 @@
-FROM dyne/devuan:ascii
-ENV debian stretch
+FROM dyne/devuan:beowulf
+ENV debian buster
 
 LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
 	  homepage="https://github.com/decodeproject/zenroom-tp-python"
