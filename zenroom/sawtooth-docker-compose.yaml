@@ -14,7 +14,7 @@ services:
         - no_proxy
     tty: true
     stdin_open: true
-    image: zenroom-tp-python:latest
+    image: dyne/zenroom-tp-sawtooth:latest
     container_name: zenroom-tp
     depends_on:
       - validator
