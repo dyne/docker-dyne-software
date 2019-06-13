@@ -37,13 +37,16 @@ RUN rm -rf redis-5.0.5*
 RUN git clone --recursive https://github.com/DECODEproject/zenroom.git && cd zenroom \
 	&& make linux-redis
 
+RUN apt-get -y -q install libevent-dev
+RUN git clone git://github.com/nicolasff/webdis.git && cd webdis && make
+
 RUN apt-get -y -q remove --purge cmake gcc xxd patch make libc6-dev perl
 RUN apt-get -y -q remove --purge openssl tzdata tmux wget libslang2 bash-completion
 RUN apt-get -y -q remove --purge iftop openssh-client
-RUN apt-get -y -q --allow-remove-essential remove --purge libsystemd0 ncurses-base
 RUN apt-get -y -q autoremove
 RUN apt-get -y -q clean
 RUN rm -rf /var/lib/apt
 RUN rm -rf /usr/share
 
-CMD redis-server --loadmodule zenroom/src/redis_zenroom.so-x86_64-0.9.so
+COPY webdis.sh .
+CMD redis-server --protected-mode no --loadmodule zenroom/src/redis_zenroom.so-x86_64-0.9.so
