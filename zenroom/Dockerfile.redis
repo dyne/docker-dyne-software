@@ -1,0 +1,49 @@
+FROM dyne/devuan:beowulf
+ENV debian buster
+
+# Metadata params
+ARG BUILD_DATE
+ARG VERSION
+ARG VCS_URL
+ARG VCS_REF
+# Metadata
+LABEL org.label-schema.build-date=$BUILD_DATE \
+org.label-schema.name="Zenroom module on Redis" \
+org.label-schema.description="Docker to run Redis-Zenroom in native x86 64bit" \
+org.label-schema.url="https://zenroom.dyne.org" \
+org.label-schema.vcs-url=$VCS_URL \
+org.label-schema.vcs-ref=$VCS_REF \
+org.label-schema.vendor="Dyne.org" \
+org.label-schema.version=$VERSION \
+org.label-schema.schema-version="1.0" \
+org.dyne.zenroom.docker.dockerfile="/Dockerfile" \
+org.dyne.zenroom.license="AGPL-3.0" \
+maintainer="Denis Roio <jaromil@dyne.org>" \
+homepage=$VCS_URL
+
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+WORKDIR /app
+
+RUN apt-get update -y -q
+RUN apt-get install -y -q cmake gcc zsh xxd patch make libc6-dev
+
+COPY redis_dlmopen.patch .
+RUN wget http://download.redis.io/releases/redis-5.0.5.tar.gz && tar xf redis-5.0.5.tar.gz \
+	&& cd redis-5.0.5 && patch -p1 < ../redis_dlmopen.patch && make && make install
+RUN rm -rf redis-5.0.5*
+
+RUN git clone --recursive https://github.com/DECODEproject/zenroom.git && cd zenroom \
+	&& make linux-redis
+
+RUN apt-get -y -q remove --purge cmake gcc xxd patch make libc6-dev perl
+RUN apt-get -y -q remove --purge openssl tzdata tmux wget libslang2 bash-completion
+RUN apt-get -y -q remove --purge iftop openssh-client
+RUN apt-get -y -q --allow-remove-essential remove --purge libsystemd0 ncurses-base
+RUN apt-get -y -q autoremove
+RUN apt-get -y -q clean
+RUN rm -rf /var/lib/apt
+RUN rm -rf /usr/share
+
+CMD redis-server --loadmodule zenroom/src/redis_zenroom.so-x86_64-0.9.so
