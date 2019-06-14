@@ -49,4 +49,4 @@ RUN rm -rf /var/lib/apt
 RUN rm -rf /usr/share
 
 COPY webdis.sh .
-CMD redis-server --protected-mode no --loadmodule zenroom/src/redis_zenroom.so-x86_64-0.9.so
+CMD redis-server --protected-mode no --loadmodule zenroom/src/redis_zenroom.so-x86_64.so
