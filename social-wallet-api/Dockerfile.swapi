@@ -1,0 +1,23 @@
+FROM dyne/clojure:ascii
+ENV debian stretch
+
+ENV LEIN_VERSION=2.8.1 \
+	LEIN_INSTALL=/usr/local/bin/ \
+	PATH=$PATH:$LEIN_INSTALL \
+	LEIN_ROOT=1
+
+LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
+	  homepage="https://github.com/commonfare-net/social-wallet-api"
+# ENV VERSION=AUTO_STRICT
+
+WORKDIR /app
+
+RUN git clone https://github.com/commonfare-net/social-wallet-api /app \
+	&& git checkout origin/without-apikey
+
+# cache build deps
+RUN lein deps
+
+COPY swapi.yml /app/resources/social-wallet-api.yaml
+
+CMD lein ring server-headless

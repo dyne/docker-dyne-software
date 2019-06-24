@@ -1,0 +1,29 @@
+FROM dyne/clojure:ascii
+ENV debian stretch
+
+ENV LEIN_VERSION=2.8.1 \
+	LEIN_INSTALL=/usr/local/bin/ \
+	PATH=$PATH:$LEIN_INSTALL \
+	LEIN_ROOT=1
+
+LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
+	  homepage="https://github.com/commonfare-net/social-wallet-api"
+# ENV VERSION=AUTO_STRICT
+
+# Nodejs repository
+ADD https://deb.nodesource.com/gpgkey/nodesource.gpg.key nodesource.gpg.key
+RUN apt-key add nodesource.gpg.key
+RUN	echo "deb http://deb.nodesource.com/node_8.x $debian main" \
+>> /etc/apt/sources.list
+RUN apt-get update \
+&& apt-get install -y -q --allow-downgrades --no-install-recommends nodejs
+# fix npm - not the latest version installed by apt-get
+RUN npm install -g npm
+
+WORKDIR /app
+
+RUN git clone https://github.com/ivanminutillo/varnelli /app
+
+RUN npm install
+RUN npm install -g shadow-cljs
+CMD shadow-cljs watch app

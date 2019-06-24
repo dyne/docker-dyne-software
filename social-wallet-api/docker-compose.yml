@@ -1,0 +1,52 @@
+# Work in progress
+
+version: '3'
+
+services:
+
+  mongo:
+    image: mvertes/alpine-mongo
+    hostname: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+
+  swapi:
+    environment:
+      - SWAPI_HOST=0.0.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile.swapi
+    depends_on: [ mongo ]
+    image: dyne/social-wallet-api:latest
+    hostname: swapi
+    container_name: swapi
+    ports:
+      - "3000:3000"
+
+
+  console:
+    build:
+      context: .
+      dockerfile: Dockerfile.console
+    depends_on: [ mongo ]
+    image: dyne/social-wallet-console:latest
+    hostname: console
+    container_name: console
+    ports:
+      - "8990:8990"
+
+  explorer:
+    build:
+      context: .
+      dockerfile: Dockerfile.explorer
+    depends_on: [ mongo ]
+    image: dyne/sociall-wallet-explorer:latest
+    hostname: explorer
+    container_name: explorer
+    ports:
+      - "8700:8700"
+
+volumes:
+  swapi:
