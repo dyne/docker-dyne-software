@@ -42,7 +42,7 @@ services:
       context: .
       dockerfile: Dockerfile.explorer
     depends_on: [ mongo ]
-    image: dyne/sociall-wallet-explorer:latest
+    image: dyne/social-wallet-explorer:latest
     hostname: explorer
     container_name: explorer
     ports:
