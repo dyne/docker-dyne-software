@@ -6,7 +6,7 @@
 #   docker run -p 3000:3000 -it dyne/social-wallet-api:latest
 #
 
-FROM dyne/clojure:latest
+FROM dyne/clojure:ascii
 ENV debian stretch
 
 LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
@@ -40,8 +40,10 @@ RUN apt-get update \
 RUN npm install -g npm
 RUN npm install -g mongo-express
 
-RUN git clone https://github.com/commonfare-net/social-wallet-api /app
 WORKDIR /app
+
+RUN git clone https://github.com/commonfare-net/social-wallet-api /app \
+	&& git checkout origin/without-apikey
 # COPY . /app
 
 # cache build deps
