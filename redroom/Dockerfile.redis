@@ -35,7 +35,10 @@ RUN wget http://download.redis.io/releases/redis-5.0.5.tar.gz && tar xf redis-5.
 RUN rm -rf redis-5.0.5*
 
 RUN git clone --recursive https://github.com/DECODEproject/zenroom.git && cd zenroom \
-	&& make linux-redis
+	&& make linux-lib
+
+RUN git clone https://github.com/decodeproject/redroom.git && cd redroom \
+	&& make
 
 RUN apt-get -y -q install libevent-dev
 RUN git clone git://github.com/nicolasff/webdis.git && cd webdis && make
@@ -49,4 +52,4 @@ RUN rm -rf /var/lib/apt
 RUN rm -rf /usr/share
 
 COPY webdis.sh .
-CMD redis-server --protected-mode no --loadmodule zenroom/src/redis_zenroom.so-x86_64.so
+CMD redis-server --protected-mode no --loadmodule redroom/redroom.so
