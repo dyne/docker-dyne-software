@@ -8,9 +8,9 @@ ARG VCS_URL
 ARG VCS_REF
 # Metadata
 LABEL org.label-schema.build-date=$BUILD_DATE \
-org.label-schema.name="Zenroom module on Redis" \
-org.label-schema.description="Docker to run Redis-Zenroom in native x86 64bit" \
-org.label-schema.url="https://zenroom.dyne.org" \
+org.label-schema.name="RedRoom" \
+org.label-schema.description="Crypto module for Redis based on Zenroom" \
+org.label-schema.url="https://redroom.dyne.org" \
 org.label-schema.vcs-url=$VCS_URL \
 org.label-schema.vcs-ref=$VCS_REF \
 org.label-schema.vendor="Dyne.org" \
@@ -37,11 +37,14 @@ RUN rm -rf redis-5.0.5*
 RUN git clone --recursive https://github.com/DECODEproject/zenroom.git && cd zenroom \
 	&& make linux-lib
 
-RUN git clone https://github.com/decodeproject/redroom.git && cd redroom \
-	&& make
 
 RUN apt-get -y -q install libevent-dev
 RUN git clone git://github.com/nicolasff/webdis.git && cd webdis && make
+
+# use SHA hash of git HEAD to update docker on new commits
+ARG SHA=LATEST
+RUN SHA=${SHA} \
+	git clone https://github.com/decodeproject/redroom.git && cd redroom && make
 
 RUN apt-get -y -q remove --purge cmake gcc xxd patch make libc6-dev perl
 RUN apt-get -y -q remove --purge openssl tzdata tmux wget libslang2 bash-completion

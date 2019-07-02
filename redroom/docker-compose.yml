@@ -1,0 +1,41 @@
+# Redroom experimental environment
+
+version: '3'
+
+services:
+
+  redroom:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: decodeproject/redroom:latest
+    hostname: redroom
+    container_name: redroom
+    ports:
+      - "6379:6379"
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redroom:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redroom
+
+  # node-red:
+  #   container_name: node-red
+  #   hostname: node-red
+  #   image: nodered/node-red-docker:slim-v8
+  #   environment:
+  #     - REDIS_SERVER=redroom
+  #     - REDIS_PORT=6379
+  #     - REDIS_DB=0
+  #     - REDIS_PASSWORD=""
+  #   ports:
+  #     - "1880:1880"
+
+volumes:
+  zenroom:
