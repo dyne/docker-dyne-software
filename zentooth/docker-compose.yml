@@ -21,6 +21,22 @@ services:
     command: |
       bash -c "zenroom-tp-python"
 
+  petition-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.petition
+    image: dyne/zentooth:petition
+    container_name: petition-web
+    depends_on:
+      - zenroom-tp
+    environment:
+      - SAWTOOTH_SERVER=rest-api
+      - SAWTOOTH_PORT=8090
+    ports:
+      - '3000:3000'
+    command: |
+      npm run dev
+
   block-info-tp:
     image: hyperledger/sawtooth-block-info-tp:latest
     container_name: block-info-tp
