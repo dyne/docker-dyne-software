@@ -1,0 +1,43 @@
+FROM dyne/devuan:beowulf
+ENV debian buster
+
+WORKDIR /app
+
+# ENTRYPOINT ["zenroom"]
+
+# Metadata params
+ARG BUILD_DATE
+ARG VERSION
+ARG VCS_URL
+ARG VCS_REF
+
+# Metadata
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="Zenroom VM" \
+      org.label-schema.description="Base docker for Zenroom operations in native x86 64bit" \
+      org.label-schema.url="https://zenroom.dyne.org" \
+      org.label-schema.vcs-url=$VCS_URL \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vendor="Dyne.org" \
+      org.label-schema.version=$VERSION \
+      org.label-schema.schema-version="1.0" \
+      org.dyne.zenroom.docker.dockerfile="/Dockerfile" \
+      org.dyne.zenroom.license="GPL-3.0-only" \
+      maintainer="Puria Nafisi Azizi <puria@dyne.org>" \
+      homepage=$VCS_URL
+
+RUN apt-get update -yq && apt-get install -yq curl \
+	&& echo "deb https://deb.nodesource.com/node_8.x buster main" \
+		 >> /etc/apt/sources.list \
+    && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key \
+	   | apt-key add - \
+	&& apt-get update -yq \
+	&& apt-get install -yq nodejs npm \
+	&& apt-get clean
+
+RUN npm install node-red
+RUN git clone https://github.com/DECODEproject/node-red-contrib-zenroom \
+	&& npm install node-red-contrib-zenroom
+COPY nodered_settings.js .
+# listen port 1880
+CMD ./node_modules/.bin/node-red -s nodered_settings.js
