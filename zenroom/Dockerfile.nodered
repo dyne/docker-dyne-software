@@ -32,12 +32,12 @@ RUN apt-get update -yq && apt-get install -yq curl \
     && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key \
 	   | apt-key add - \
 	&& apt-get update -yq \
-	&& apt-get install -yq nodejs npm \
+	&& apt-get install -yq yarnpkg \
 	&& apt-get clean
 
-RUN npm install node-red
+RUN yarnpkg add node-red
 RUN git clone https://github.com/DECODEproject/node-red-contrib-zenroom \
-	&& npm install node-red-contrib-zenroom
+	&& cd node-red-contrib-zenroom && yarnpkg install
 COPY nodered_settings.js .
 # listen port 1880
 CMD ./node_modules/.bin/node-red -s nodered_settings.js
