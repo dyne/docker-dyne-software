@@ -4,7 +4,7 @@ ENV debian buster
 WORKDIR /app
 
 # ENTRYPOINT ["zenroom"]
-
+ 
 # Metadata params
 ARG BUILD_DATE
 ARG VERSION
@@ -27,17 +27,19 @@ LABEL org.label-schema.build-date=$BUILD_DATE \
       homepage=$VCS_URL
 
 RUN apt-get update -yq && apt-get install -yq curl \
-	&& echo "deb https://deb.nodesource.com/node_8.x buster main" \
+	&& echo "deb https://deb.nodesource.com/node_10.x buster main" \
 		 >> /etc/apt/sources.list \
     && curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key \
 	   | apt-key add - \
 	&& apt-get update -yq \
-	&& apt-get install -yq yarnpkg \
-	&& apt-get clean
+	&& apt-get install -yq 'nodejs=10.*nodesource1' \
+	&& apt-get clean \
+	&& curl -L https://npmjs.org/install.sh | sh \
+    && npm install node-red
 
-RUN yarnpkg add node-red
 RUN git clone https://github.com/DECODEproject/node-red-contrib-zenroom \
-	&& cd node-red-contrib-zenroom && yarnpkg install
+	&& cd node-red-contrib-zenroom && npm install
 COPY nodered_settings.js .
 # listen port 1880
 CMD ./node_modules/.bin/node-red -s nodered_settings.js
+# CMD /bin/bash
