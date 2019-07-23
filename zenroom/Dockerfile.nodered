@@ -38,8 +38,8 @@ RUN apt-get update -yq && apt-get install -yq curl \
     && npm install node-red
 
 RUN git clone https://github.com/DECODEproject/node-red-contrib-zenroom \
-	&& cd node-red-contrib-zenroom && npm install
+	&& npm install node-red-contrib-zenroom
 COPY nodered_settings.js .
 # listen port 1880
-CMD ./node_modules/.bin/node-red -s nodered_settings.js
+CMD /app/node_modules/.bin/node-red -s nodered_settings.js
 # CMD /bin/bash
