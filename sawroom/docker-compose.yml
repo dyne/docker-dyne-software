@@ -25,10 +25,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.petition
-    image: dyne/zentooth:petition
+    image: dyne/sawroom:petition
     container_name: petition-web
     depends_on:
       - zenroom-tp
+      - rest-api
     environment:
       - SAWTOOTH_SERVER=rest-api
       - SAWTOOTH_PORT=8090
@@ -36,6 +37,21 @@ services:
       - '3000:3000'
     command: |
       npm run dev
+
+  explorer-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.explorer
+    image: dyne/sawroom:explorer
+    container_name: explorer-web
+    depends_on:
+      - rest-api
+    ports:
+      - '9000:9000'
+    environment:
+      - SAWTOOTH_API="http://rest-api:8090/blocks"
+    command: |
+      yarn start
 
   block-info-tp:
     image: hyperledger/sawtooth-block-info-tp:latest

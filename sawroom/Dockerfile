@@ -38,7 +38,7 @@ RUN wget https://github.com/hyperledger/sawtooth-sdk-python/archive/v1.2.1.tar.g
 	&& rm -rf v1.2.1.tar.gz sawtooth-sdk-python-1.2.1 sawtooth-sdk-python
 
 # using latest zenroom-tp-python on git
-RUN git clone https://github.com/DECODEproject/zenroom-tp-python /project/zenroom-tp-python \
+RUN git clone https://github.com/DECODEproject/sawroom /project/zenroom-tp-python \
 	&& pip3 install -e /project/zenroom-tp-python
 
 ENV PATH=$PATH:/project/zenroom-tp-python/bin
