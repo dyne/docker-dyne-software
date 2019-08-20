@@ -4,54 +4,71 @@ version: '3'
 
 services:
 
-  zenroom-tp:
+  # zenroom-tp:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #     args:
+  #       - http_proxy
+  #       - https_proxy
+  #       - no_proxy
+  #   tty: true
+  #   stdin_open: true
+  #   image: dyne/zenroom-tp-sawtooth:latest
+  #   container_name: zenroom-tp
+  #   depends_on:
+  #     - validator
+  #   command: |
+  #     bash -c "zenroom-tp-python"
+
+  petition-tp:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.petition-tp-python
       args:
         - http_proxy
         - https_proxy
         - no_proxy
     tty: true
     stdin_open: true
-    image: dyne/zenroom-tp-sawtooth:latest
-    container_name: zenroom-tp
+    image: dyne/petition-tp-python:latest
+    container_name: petition-tp
     depends_on:
       - validator
     command: |
-      bash -c "zenroom-tp-python"
+      bash -c "petition-tp-python"
 
-  petition-web:
-    build:
-      context: .
-      dockerfile: Dockerfile.petition
-    image: dyne/sawroom:petition
-    container_name: petition-web
-    depends_on:
-      - zenroom-tp
-      - rest-api
-    environment:
-      - SAWTOOTH_SERVER=rest-api
-      - SAWTOOTH_PORT=8090
-    ports:
-      - '3000:3000'
-    command: |
-      npm run dev
+  # petition-web:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.petition
+  #   image: dyne/sawroom:petition
+  #   container_name: petition-web
+  #   depends_on:
+  #     - zenroom-tp
+  #     - rest-api
+  #   environment:
+  #     - SAWTOOTH_SERVER=rest-api
+  #     - SAWTOOTH_PORT=8090
+  #   ports:
+  #     - '3000:3000'
+  #   command: |
+  #     npm run dev
 
-  explorer-web:
-    build:
-      context: .
-      dockerfile: Dockerfile.explorer
-    image: dyne/sawroom:explorer
-    container_name: explorer-web
-    depends_on:
-      - rest-api
-    ports:
-      - '9000:9000'
-    environment:
-      - SAWTOOTH_API="http://rest-api:8090/blocks"
-    command: |
-      yarn start
+  # explorer-web:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.explorer
+  #   image: dyne/sawroom:explorer
+  #   container_name: explorer-web
+  #   depends_on:
+  #     - rest-api
+  #   ports:
+  #     - '9000:9000'
+  #   environment:
+  #     - SAWTOOTH_API="http://rest-api:8090/blocks"
+  #   command: |
+  #     yarn start
 
   block-info-tp:
     image: hyperledger/sawtooth-block-info-tp:latest
