@@ -6,7 +6,7 @@
 #   docker run -p 3000:3000 -it dyne/clojure/agiladmin:latest
 #
 
-FROM dyne/clojure
+FROM dyne/clojure:ascii
 LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
 	  homepage="https://github.com/dyne/agiladmin"
 # ENV VERSION=AUTO_STRICT
