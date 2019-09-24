@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker build -f . -t dyne/agiladmin:latest
+docker build . -t dyne/agiladmin:latest
