@@ -20,6 +20,7 @@ RUN apt-get update -y -q \
     python3-toml \
     python3-yaml \
     python3-zmq \
+    zsh \
     && apt-get clean
 
 RUN pip3 install grpcio-tools wheel
@@ -40,6 +41,14 @@ RUN wget https://github.com/hyperledger/sawtooth-sdk-python/archive/v1.2.1.tar.g
 # using latest zenroom-tp-python on git
 RUN git clone https://github.com/DECODEproject/petition-tp-python /project/petition-tp-python \
 	&& pip3 install -e /project/petition-tp-python/src
+
+# install zenroom's cli binary and repo for tests
+RUN wget https://sdk.dyne.org:4443/view/zenroom/job/zenroom-static-amd64/lastSuccessfulBuild/artifact/src/zenroom -O /usr/local/bin/zenroom && chmod +x /usr/local/bin/zenroom \
+	&& git clone https://github.com/decodeproject/zenroom
+
+RUN cd /project/zenroom/test/zencode_coconut \
+	&& ./run_coconut_example.sh zenroom && ./run_petition_example.sh zenroom \
+	&& cp -v credentials.json verifier.json /project/
 
 ENV PATH=$PATH:/project/petition-tp-python/bin
 WORKDIR /project/petition-tp-python
