@@ -1,8 +1,27 @@
 #!/bin/sh
 
+if test "$1" = ""; then
+   echo "usage: ./run datadir-path"
+   return 1
+fi
+
+src=$1
+shift 1
+
+if test "$src" = "."; then
+   src=$(pwd)
+fi
+
+src="$src"/sawtooth
+mkdir -p "$src"/data
+mkdir -p "$src"/keys
+mkdir -p "$src"/log
+
 docker run -it \
-	    -p 9001:9001 \
-		-p 8008:8008 \
-		-p 8000:8000 \
-	    dyne/sawroom:latest $*
+ 	   --mount type=bind,source="$src"/data,destination=/var/lib/sawtooth \
+	   --mount type=bind,source="$src"/keys,destination=/etc/sawtooth/keys \
+	   --mount type=bind,source="$src"/log,destination=/var/log/sawtooth \
+	   -p 9001:9001 \
+	   -p 8008:8008 \
+	   dyne/sawroom:latest $@
 

@@ -31,7 +31,7 @@ RUN curl https://sh.rustup.rs -sSf > /usr/bin/rustup-init \
  && rustup-init -y
 
 ENV PATH=$PATH:/project/sawtooth-core/bin:/protoc3/bin:/project/sawtooth-core/bin:/root/.cargo/bin \
-	CARGO_INCREMENTAL=1
+	CARGO_INCREMENTAL=0
 
 # RUN cargo install sccache
 # ENV RUSTC_WRAPPER=sccache
@@ -69,18 +69,19 @@ RUN git clone https://github.com/DECODEproject/petition-tp-python /project/petit
 RUN wget https://sdk.dyne.org:4443/view/zenroom/job/zenroom-static-amd64/lastSuccessfulBuild/artifact/src/zenroom -O /usr/local/bin/zenroom && chmod +x /usr/local/bin/zenroom \
 	&& git clone https://github.com/decodeproject/zenroom
 
-# .zen is code
-# .json is data
-# here alice and bob are two rounds of the coconut flow fully generated
-RUN cd /project/zenroom/test/zencode_coconut \
-	&& cp *.zen /project/ \
-	&& ./run_coconut_example.sh zenroom && ./run_petition_example.sh zenroom \
-	&& mkdir -p /project/alice/ && cp -v *.json /project/alice/ \
-	&& ./run_coconut_example.sh zenroom && ./run_petition_example.sh zenroom \
-	&& mkdir -p /project/bob/ && cp -v *.json /project/bob/
-# sha256 sums are calculated to mark the difference by the two rounds.
-RUN cat alice/* | sha256sum - > alice.sha256 \
-	&& cat bob/* | sha256sum - > bob.sha256
+# ## helper personas for the test units
+# # .zen is code
+# # .json is data
+# # here alice and bob are two rounds of the coconut flow fully generated
+# RUN cd /project/zenroom/test/zencode_coconut \
+# 	&& cp *.zen /project/ \
+# 	&& ./run_coconut_example.sh zenroom && ./run_petition_example.sh zenroom \
+# 	&& mkdir -p /project/alice/ && cp -v *.json /project/alice/ \
+# 	&& ./run_coconut_example.sh zenroom && ./run_petition_example.sh zenroom \
+# 	&& mkdir -p /project/bob/ && cp -v *.json /project/bob/
+# # sha256 sums are calculated to mark the difference by the two rounds.
+# RUN cat alice/* | sha256sum - > alice.sha256 \
+# 	&& cat bob/* | sha256sum - > bob.sha256
 
 ENV PATH=$PATH:/project/petition-tp-python/bin
 
@@ -110,11 +111,11 @@ RUN cd /project/sawtooth-core/families/settings/sawtooth_settings && cargo build
 RUN cd /project/sawtooth-core/families/block_info/sawtooth_block_info && cargo build \
 	&& cp -v ./target/debug/block-info-tp /usr/local/bin/block-info-tp
 
-# temet nosce
-RUN apt-get install -y -q yarnpkg && yarnpkg add gatsby-cli npm
-RUN git clone https://github.com/DECODEproject/temet-nosce /project/temet-nosce \
-	&& cd /project/temet-nosce && yarnpkg
-# CMD yarn start
+# # temet nosce
+# RUN apt-get install -y -q yarnpkg && yarnpkg add gatsby-cli npm
+# RUN git clone https://github.com/DECODEproject/temet-nosce /project/temet-nosce \
+# 	&& cd /project/temet-nosce && yarnpkg
+# # CMD yarn start
 
 
 RUN git clone https://github.com/hyperledger/sawtooth-devmode.git \
@@ -122,7 +123,7 @@ RUN git clone https://github.com/hyperledger/sawtooth-devmode.git \
 	&& cargo build
 RUN cp /project/sawtooth-devmode/target/debug/devmode-engine-rust /usr/local/bin
 
-RUN apt-get install -y -q npm
+# RUN apt-get install -y -q npm
 
 COPY sawroom-validator sawroom-validator
 
