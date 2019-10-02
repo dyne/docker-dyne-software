@@ -1,0 +1,8 @@
+#!/bin/sh
+
+docker run -it \
+	    -p 9001:9001 \
+		-p 8008:8008 \
+		-p 8000:8000 \
+	    dyne/sawroom:latest $*
+
