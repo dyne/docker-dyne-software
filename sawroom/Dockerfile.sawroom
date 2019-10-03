@@ -162,6 +162,10 @@ RUN cp /root/go/bin/dam* /usr/bin
 
 WORKDIR /project
 
+# petition transaction middleware
+RUN pip3 install 'fastapi[all]' && pip3 install hypercorn
+
+
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY sawroom-validator sawroom-validator
 

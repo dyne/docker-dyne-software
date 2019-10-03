@@ -21,6 +21,7 @@ docker run -it \
 	   --mount type=bind,source="$src"/log/tor,destination=/var/log/tor \
 	   -p 9001:9001 \
 	   -p 8008:8008 \
+	   -p 9009:9009 \
 	   -p 19999:19999 \
-	   dyne/sawroom:latest $@
+	   dyne/sawroom:latest $*
 
