@@ -1,27 +1,26 @@
 #!/bin/sh
 
-if test "$1" = ""; then
-   echo "usage: ./run datadir-path"
-   return 1
-fi
 
-src=$1
-shift 1
+src=/var/lib/sawroom
+touch $src/.keep || return 1
 
-if test "$src" = "."; then
-   src=$(pwd)
-fi
+# if test "$src" = "."; then
+#    src=$(pwd)
+# fi
 
-src="$src"/sawtooth
 mkdir -p "$src"/data
-mkdir -p "$src"/keys
-mkdir -p "$src"/log
+mkdir -p "$src"/keys/sawtooth "$src"/keys/tor
+mkdir -p "$src"/log/sawtooth "$src"/log/tor
+
+# --mount type=bind,source="$src"/keys/tor,destination=/etc/tor \
 
 docker run -it \
  	   --mount type=bind,source="$src"/data,destination=/var/lib/sawtooth \
-	   --mount type=bind,source="$src"/keys,destination=/etc/sawtooth/keys \
-	   --mount type=bind,source="$src"/log,destination=/var/log/sawtooth \
+	   --mount type=bind,source="$src"/keys/sawtooth,destination=/etc/sawtooth/keys \
+	   --mount type=bind,source="$src"/log/sawtooth,destination=/var/log/sawtooth \
+	   --mount type=bind,source="$src"/log/tor,destination=/var/log/tor \
 	   -p 9001:9001 \
 	   -p 8008:8008 \
+	   -p 19999:19999 \
 	   dyne/sawroom:latest $@
 
