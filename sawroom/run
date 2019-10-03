@@ -1,6 +1,6 @@
 #!/bin/sh
 
-
+# set it to somewhere in the home
 src=/var/lib/sawroom
 touch $src/.keep || return 1
 
@@ -17,6 +17,7 @@ mkdir -p "$src"/log/sawtooth "$src"/log/tor
 docker run -it \
  	   --mount type=bind,source="$src"/data,destination=/var/lib/sawtooth \
 	   --mount type=bind,source="$src"/keys/sawtooth,destination=/etc/sawtooth/keys \
+	   --mount type=bind,source="$src"/keys/tor,destination=/var/lib/tor \
 	   --mount type=bind,source="$src"/log/sawtooth,destination=/var/log/sawtooth \
 	   --mount type=bind,source="$src"/log/tor,destination=/var/log/tor \
 	   -p 9001:9001 \
