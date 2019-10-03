@@ -89,8 +89,8 @@ ENV PATH=$PATH:/project/petition-tp-python/bin
 RUN apt-get install -y -q libssl-dev libzmq3-dev
 
 ## Sawtooth Validator
-RUN wget https://github.com/hyperledger/sawtooth-core/archive/v1.2.2.tar.gz \
-	&& tar xvf v1.2.2.tar.gz && ln -s sawtooth-core-1.2.2 sawtooth-core \
+RUN wget https://github.com/hyperledger/sawtooth-core/archive/v1.3.0.tar.gz \
+	&& tar xvf v1.3.0.tar.gz && ln -s sawtooth-core-1.3.0 sawtooth-core \
 	&& cd /project/sawtooth-core && ./bin/protogen \
 	&& cd /project/sawtooth-core/validator && cargo build
 # Install Sawtooth Validator (rust and python)
