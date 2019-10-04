@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ "$1" != "" ]; then
+	echo "Starting Sawroom as ID $1"
+	sed -e "s/1000/$1/" -i /etc/passwd
+fi
+/etc/init.d/supervisor start
+

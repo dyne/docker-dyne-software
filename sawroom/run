@@ -11,18 +11,34 @@ touch $src/.keep || return 1
 mkdir -p "$src"/data
 mkdir -p "$src"/keys/sawtooth "$src"/keys/tor
 mkdir -p "$src"/log/sawtooth "$src"/log/tor
+t="$src"/log/tor/dam-client.log && touch "$t" && chown 1000:1000 $t
+t="$src"/log/tor/dam-dir.log && touch "$t" && chown 1000:1000 $t
+t="$src"/log/tor/tor.log && touch "$t" && chown 1000:1000 $t
 
 # --mount type=bind,source="$src"/keys/tor,destination=/etc/tor \
 
-docker run -it \
- 	   --mount type=bind,source="$src"/data,destination=/var/lib/sawtooth \
-	   --mount type=bind,source="$src"/keys/sawtooth,destination=/etc/sawtooth/keys \
-	   --mount type=bind,source="$src"/keys/tor,destination=/var/lib/tor \
-	   --mount type=bind,source="$src"/log/sawtooth,destination=/var/log/sawtooth \
-	   --mount type=bind,source="$src"/log/tor,destination=/var/log/tor \
-	   -p 9001:9001 \
-	   -p 8008:8008 \
-	   -p 9009:9009 \
-	   -p 19999:19999 \
-	   dyne/sawroom:latest $*
-
+if [ "$1" = "" ]; then
+	docker run -it \
+		   --mount type=bind,source="$src"/data,destination=/var/lib/sawtooth \
+		   --mount type=bind,source="$src"/keys/sawtooth,destination=/etc/sawtooth/keys \
+		   --mount type=bind,source="$src"/keys/tor,destination=/var/lib/tor \
+		   --mount type=bind,source="$src"/log/sawtooth,destination=/var/log/sawtooth \
+		   --mount type=bind,source="$src"/log/tor,destination=/var/log/tor \
+		   -p 9001:9001 \
+		   -p 8008:8008 \
+		   -p 9009:9009 \
+		   -p 19999:19999 \
+		   dyne/sawroom:latest /project//sawroom-start $(id -ru)
+else
+	docker run -it \
+		   --mount type=bind,source="$src"/data,destination=/var/lib/sawtooth \
+		   --mount type=bind,source="$src"/keys/sawtooth,destination=/etc/sawtooth/keys \
+		   --mount type=bind,source="$src"/keys/tor,destination=/var/lib/tor \
+		   --mount type=bind,source="$src"/log/sawtooth,destination=/var/log/sawtooth \
+		   --mount type=bind,source="$src"/log/tor,destination=/var/log/tor \
+		   -p 9001:9001 \
+		   -p 8008:8008 \
+		   -p 9009:9009 \
+		   -p 19999:19999 \
+		   dyne/sawroom:latest $*
+fi

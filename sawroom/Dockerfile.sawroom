@@ -86,7 +86,7 @@ RUN wget https://sdk.dyne.org:4443/view/zenroom/job/zenroom-static-amd64/lastSuc
 ENV PATH=$PATH:/project/petition-tp-python/bin
 
 # installed later: must not be installed when compiling the sdk
-RUN apt-get install -y -q libssl-dev libzmq3-dev
+RUN apt-get install -y -q libssl-dev libzmq3-dev torsocks
 
 ## Sawtooth Validator
 RUN wget https://github.com/hyperledger/sawtooth-core/archive/v1.3.0.tar.gz \
@@ -118,11 +118,17 @@ RUN cd /project/sawtooth-core/families/block_info/sawtooth_block_info && cargo b
 # # CMD yarn start
 
 
-RUN git clone https://github.com/hyperledger/sawtooth-devmode.git \
-	sawtooth-devmode && cd /project/sawtooth-devmode \
-	&& cargo build
-RUN cp /project/sawtooth-devmode/target/debug/devmode-engine-rust /usr/local/bin
+# RUN git clone https://github.com/hyperledger/sawtooth-devmode.git \
+# 	sawtooth-devmode && cd /project/sawtooth-devmode \
+# 	&& cargo build
+# RUN cp /project/sawtooth-devmode/target/debug/devmode-engine-rust /usr/local/bin
 
+RUN wget https://github.com/hyperledger/sawtooth-pbft/archive/v1.0.0.tar.gz \
+	&& tar xfz v1.0.0.tar.gz && ln -s sawtooth-pbft-1.0.0 sawtooth-pbft \
+    && ls -l \
+	&& cd /project/sawtooth-pbft \
+    && cargo build
+RUN cp /project/sawtooth-pbft/target/debug/pbft-engine /usr/local/bin
 # RUN apt-get install -y -q npm
 
 
@@ -166,6 +172,7 @@ RUN pip3 install 'fastapi[all]' && pip3 install hypercorn
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY sawroom-validator sawroom-validator
+COPY sawroom-start sawroom-start
 
 RUN    echo "127.0.0.1 validator" >> /etc/hosts \
 	&& echo "127.0.0.1 rest-api" >> /etc/hosts
