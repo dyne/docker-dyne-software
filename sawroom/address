@@ -1,0 +1,15 @@
+#!/bin/sh
+
+R=/var/lib/sawroom
+if [ -r "$R" ]; then
+	dam=$(awk '
+BEGIN { dam="" }
+/Our hostname is:/ { dam=$6 }
+END { print dam }' $R/log/tor/dam-client.log)
+	saw=$(cat "$R"/keys/sawtooth/validator.pub)
+	echo "Dam onion address: $dam"
+	echo "Sawtooth verifier: $saw"
+else
+	echo "Not found: $R"
+	return 1
+fi

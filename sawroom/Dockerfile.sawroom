@@ -173,6 +173,7 @@ RUN pip3 install 'fastapi[all]' && pip3 install hypercorn
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY sawroom-validator sawroom-validator
 COPY sawroom-start sawroom-start
+COPY sawroom-list sawroom-list
 
 RUN    echo "127.0.0.1 validator" >> /etc/hosts \
 	&& echo "127.0.0.1 rest-api" >> /etc/hosts
