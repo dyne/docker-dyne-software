@@ -61,7 +61,11 @@ RUN cd /project/zenroom/test/zencode_coconut \
 RUN cat alice/* | sha256sum - > alice.sha256 \
 	&& cat bob/* | sha256sum - > bob.sha256
 
+# petition transaction middleware
+RUN pip3 install 'fastapi[all]' && pip3 install hypercorn
+
 ENV PATH=$PATH:/project/petition-tp-python/bin
 WORKDIR /project
 COPY petition-test.sh petition-test.sh
+COPY petition-api.sh petition-api.sh
 CMD petition-tp-python

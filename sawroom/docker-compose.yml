@@ -4,23 +4,6 @@ version: '3'
 
 services:
 
-  # zenroom-tp:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #     args:
-  #       - http_proxy
-  #       - https_proxy
-  #       - no_proxy
-  #   tty: true
-  #   stdin_open: true
-  #   image: dyne/zenroom-tp-sawtooth:latest
-  #   container_name: zenroom-tp
-  #   depends_on:
-  #     - validator
-  #   command: |
-  #     bash -c "zenroom-tp-python"
-
   petition-tp:
     build:
       context: .
@@ -35,8 +18,39 @@ services:
     container_name: petition-tp
     depends_on:
       - validator
+    environment:
+      - SAWTOOTH_VALIDATOR_ENDPOINT=tcp://127.0.0.1:4004
     command: |
       bash -c "petition-tp-python"
+
+
+  petition-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.petition-tp-python
+      args:
+        - http_proxy
+        - https_proxy
+        - no_proxy
+    tty: true
+    stdin_open: true
+    image: dyne/petition-tp-python:latest
+    container_name: petition-api
+    depends_on:
+      - petition-tp
+      - validator
+    ports:
+      - '9009:9009'
+    environment:
+      - SAWTOOTH_VALIDATOR_ENDPOINT=tcp://127.0.0.1:4004
+      - JWT_ALGORITHM=HS256
+      - JWT_TOKEN_SUBJECT=access
+      - JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - JWT_USERNAME=demo
+      - JWT_PASSWORD=demo
+      - JWT_RANDOM_SECRET=0xBADC0FF3
+    command: |
+      ./petition-api.sh
 
   # petition-web:
   #   build:
