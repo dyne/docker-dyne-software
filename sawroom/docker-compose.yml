@@ -43,6 +43,7 @@ services:
       - '9009:9009'
     environment:
       - SAWTOOTH_VALIDATOR_ENDPOINT=tcp://127.0.0.1:4004
+      - SAWTOOTH_REST_ENDPOINT=http://rest-api:8090
       - JWT_ALGORITHM=HS256
       - JWT_TOKEN_SUBJECT=access
       - JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
