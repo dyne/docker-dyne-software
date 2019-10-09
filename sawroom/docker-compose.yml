@@ -19,7 +19,8 @@ services:
     depends_on:
       - validator
     environment:
-      - SAWTOOTH_VALIDATOR_ENDPOINT=tcp://127.0.0.1:4004
+      - SAWTOOTH_VALIDATOR_ENDPOINT=tcp://validator:4004
+      - SAWTOOTH_REST_ENDPOINT=http://rest-api:8090
     command: |
       bash -c "petition-tp-python"
 
@@ -42,7 +43,7 @@ services:
     ports:
       - '9009:9009'
     environment:
-      - SAWTOOTH_VALIDATOR_ENDPOINT=tcp://127.0.0.1:4004
+      - SAWTOOTH_VALIDATOR_ENDPOINT=tcp://validator:4004
       - SAWTOOTH_REST_ENDPOINT=http://rest-api:8090
       - JWT_ALGORITHM=HS256
       - JWT_TOKEN_SUBJECT=access
@@ -90,14 +91,14 @@ services:
     container_name: block-info-tp
     depends_on:
       - validator
-    command: block-info-tp -vv --connect tcp://validator:4004
+    command: block-info-tp -v --connect tcp://validator:4004
 
   settings-tp:
     image: hyperledger/sawtooth-settings-tp:latest
     container_name: settings-tp
     depends_on:
       - validator
-    command: settings-tp -vv --connect tcp://validator:4004
+    command: settings-tp -v --connect tcp://validator:4004
 
   rest-api:
     image: hyperledger/sawtooth-rest-api:latest
@@ -107,7 +108,7 @@ services:
     depends_on:
       - validator
     entrypoint: |
-      sawtooth-rest-api -vv
+      sawtooth-rest-api -v
         --connect tcp://validator:4004
         --bind rest-api:8090
 
@@ -140,7 +141,7 @@ services:
           -o config.batch &&
         sawadm genesis config-genesis.batch config.batch
         fi;
-        sawtooth-validator -vv \
+        sawtooth-validator -vvvv \
             --endpoint tcp://validator:8800 \
             --bind component:tcp://eth0:4004 \
             --bind network:tcp://eth0:8800 \
