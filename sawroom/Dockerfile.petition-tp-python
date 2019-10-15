@@ -39,9 +39,7 @@ RUN wget https://github.com/hyperledger/sawtooth-sdk-python/archive/v1.2.2.tar.g
 	&& rm -rf v1.2.2.tar.gz sawtooth-sdk-python-1.2.2 sawtooth-sdk-python
 
 # using latest zenroom-tp-python on git
-# RUN git clone https://github.com/DECODEproject/petition-tp-python /project/petition-tp-python \
-
-COPY petition-tp-python /project/petition-tp-python
+RUN git clone https://github.com/DECODEproject/petition-tp-python /project/petition-tp-python
 RUN pip3 install -e /project/petition-tp-python/src
 
 # install zenroom's cli binary and repo for tests
