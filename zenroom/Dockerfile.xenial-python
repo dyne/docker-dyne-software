@@ -1,0 +1,18 @@
+# docker build -t dyne/xenial-python -f Dockerfile.test-python .
+#  docker run -ti dyne/xenial-python
+FROM ubuntu:xenial
+
+RUN apt-get update && \
+  apt-get install -y software-properties-common && \
+  add-apt-repository ppa:jonathonf/python-3.6
+RUN apt-get update
+
+RUN apt-get install -y build-essential python3.6 python3.6-dev python3-pip python3.6-venv
+RUN apt-get install -y git
+
+# update pip
+RUN python3.6 -m pip install pip --upgrade
+RUN python3.6 -m pip install wheel
+RUN python3.6 -m pip install zenroom==1.0.7rc2
+
+CMD python3.6 -c "from zenroom import zenroom; print(zenroom.zenroom_exec('print(\"OK\")').stdout)"
