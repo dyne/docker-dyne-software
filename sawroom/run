@@ -28,7 +28,7 @@ if [ "$1" = "" ]; then
 		   -p 8008:8008 \
 		   -p 9009:9009 \
 		   -p 19999:19999 \
-		   dyne/sawroom:latest /project//sawroom-start $ID
+		   dyne/sawroom:latest sawroom-start $ID
 else
 	docker run -it \
 		   --mount type=bind,source="$src"/data,destination=/var/lib/sawtooth \
