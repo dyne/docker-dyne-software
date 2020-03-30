@@ -10,13 +10,12 @@ FROM dyne/clojure:ascii
 ENV debian stretch
 
 LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
-	  homepage="https://github.com/commonfare-net/social-wallet-api"
-# ENV VERSION=AUTO_STRICT
+	  homepage="socialwallet.dyne.org"
 
 # CLI arguments
 ARG foreground=true
 
-ENV LEIN_VERSION=2.8.1 \
+ENV LEIN_VERSION=2.9.3 \
 	LEIN_INSTALL=/usr/local/bin/ \
 	PATH=$PATH:$LEIN_INSTALL \
 	LEIN_ROOT=1
@@ -30,28 +29,41 @@ RUN	echo "deb http://deb.nodesource.com/node_8.x $debian main" \
 
 
 ## needed for update-alternatives to not fail
-RUN apt-get update \
+RUN apt-get update && apt-get upgrade -y -q \
 	&& apt-get install -y -q --allow-downgrades --no-install-recommends \
-       		   mongodb nodejs supervisor gnupg1 ca-certificates\
+       		   mongodb nodejs supervisor gnupg1 ca-certificates python-pip \
  	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
+
+# https://github.com/bendikro/supervisord-dependent-startup
+RUN pip install supervisord-dependent-startup
 
 # fix npm - not the latest version installed by apt-get
 RUN npm install -g npm
 RUN npm install -g mongo-express
 
-WORKDIR /app
+WORKDIR /swapi
 
-RUN git clone https://github.com/commonfare-net/social-wallet-api /app \
+RUN git clone https://github.com/commonfare-net/social-wallet-api /swapi \
 	&& git checkout origin/without-apikey
-# COPY . /app
+COPY swapi.yml /swapi/resources/social-wallet-api.yaml
 
 # cache build deps
 RUN lein deps
 
+WORKDIR /swapp
 
-ADD https://raw.githubusercontent.com/dyne/docker-dyne-software/master/social-wallet-api/supervisord.conf \ 
-	/etc/supervisor/supervisord.conf
+RUN git clone https://github.com/commonfare-net/social-wallet /swapp \
+	&& git checkout feature/commonfare
+
+# cache build deps
+RUN lein deps
+
+# ADD https://raw.githubusercontent.com/dyne/docker-dyne-software/master/social-wallet-api/supervisord.conf \ 
+# 	/etc/supervisor/supervisord.conf
+
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+
 RUN sed -i "s/nodaemon=true/nodaemon=$foreground/" /etc/supervisor/supervisord.conf
 
 # supervisor
