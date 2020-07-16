@@ -1,0 +1,11 @@
+FROM ubuntu:latest
+
+WORKDIR /code/zenroom
+
+RUN apt-get clean && apt-get update && apt-get upgrade -y
+RUN DEBIAN_FRONTEND="noninteractive" apt-get install -y git build-essential cmake zsh xxd
+RUN git clone --recursive https://github.com/dyne/Zenroom.git .
+RUN make linux
+RUN ln -s /code/zenroom/src/zenroom /usr/bin/zenroom
+
+ENTRYPOINT ["zenroom"]
