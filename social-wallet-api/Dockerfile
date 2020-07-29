@@ -39,8 +39,8 @@ RUN apt-get update && apt-get upgrade -y -q \
 RUN pip install supervisord-dependent-startup
 
 # fix npm - not the latest version installed by apt-get
-RUN npm install -g npm
-RUN npm install -g mongo-express
+# RUN npm install -g npm
+# RUN npm install -g mongo-express
 
 WORKDIR /swapi
 
@@ -54,7 +54,7 @@ RUN lein deps
 WORKDIR /swapp
 
 RUN git clone https://github.com/commonfare-net/social-wallet /swapp \
-	&& git checkout feature/commonfare
+	&& git checkout feature/stable-2
 
 # cache build deps
 RUN lein deps
@@ -63,6 +63,7 @@ RUN lein deps
 # 	/etc/supervisor/supervisord.conf
 
 COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY email-conf.yaml /swapp/email-conf.yaml
 
 RUN sed -i "s/nodaemon=true/nodaemon=$foreground/" /etc/supervisor/supervisord.conf
 

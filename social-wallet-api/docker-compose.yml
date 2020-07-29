@@ -25,28 +25,38 @@ services:
     ports:
       - "3000:3000"
 
+  # console:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.console
+  #   depends_on: [ mongo, swapi ]
+  #   image: dyne/social-wallet-console:latest
+  #   hostname: console
+  #   container_name: console
+  #   ports:
+  #     - "8990:8990"
 
-  console:
+  # explorer:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.explorer
+  #   depends_on: [ mongo, swapi ]
+  #   image: dyne/social-wallet-explorer:latest
+  #   hostname: explorer
+  #   container_name: explorer
+  #   ports:
+  #     - "8700:8700"
+
+  social-wallet:
     build:
       context: .
-      dockerfile: Dockerfile.console
-    depends_on: [ mongo ]
-    image: dyne/social-wallet-console:latest
-    hostname: console
-    container_name: console
+      dockerfile: Dockerfile.social-wallet
+    depends_on: [ mongo, swapi ]
+    image: dyne/social-wallet:latest
+    hostname: social-wallet
+    container_name: social-wallet
     ports:
-      - "8990:8990"
-
-  explorer:
-    build:
-      context: .
-      dockerfile: Dockerfile.explorer
-    depends_on: [ mongo ]
-    image: dyne/social-wallet-explorer:latest
-    hostname: explorer
-    container_name: explorer
-    ports:
-      - "8700:8700"
+      - "3001:3001"
 
 volumes:
   swapi:
