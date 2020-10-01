@@ -1,4 +1,4 @@
-FROM dyne/devuan:beowulf
+FROM registry.gitlab.com/paddy-hack/devuan/slim:beowulf
 ENV debian buster
 
 LABEL maintainer="Denis Roio <jaromil@dyne.org>" \

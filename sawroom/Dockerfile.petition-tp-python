@@ -1,4 +1,4 @@
-FROM dyne/devuan:beowulf
+FROM registry.gitlab.com/paddy-hack/devuan/slim:beowulf
 ENV debian buster
 
 LABEL maintainer="Puria Nafisi Azizi <puria@dyne.org>" \
@@ -20,10 +20,14 @@ RUN apt-get update -y -q \
     python3-toml \
     python3-yaml \
     python3-zmq \
+    python3-grpcio \
+    python3-grpc-tools \
     zsh \
+    wget \
+    git \
     && apt-get clean
 
-RUN pip3 install grpcio-tools wheel
+RUN pip3 install wheel
 
 RUN mkdir -p /var/log/sawtooth /project
 
@@ -43,23 +47,23 @@ RUN git clone https://github.com/DECODEproject/petition-tp-python /project/petit
 RUN pip3 install -e /project/petition-tp-python/src
 
 # install zenroom's cli binary and repo for tests
-RUN wget https://sdk.dyne.org:4443/view/zenroom/job/zenroom-static-amd64/lastSuccessfulBuild/artifact/src/zenroom -O /usr/local/bin/zenroom && chmod +x /usr/local/bin/zenroom \
+RUN wget https://sdk.dyne.org/view/zenroom/job/zenroom-static-amd64/lastSuccessfulBuild/artifact/src/zenroom -O /usr/local/bin/zenroom && chmod +x /usr/local/bin/zenroom \
 	&& git clone https://github.com/decodeproject/zenroom
 
 # .zen is code
 # .json is data
 # here alice and bob are two rounds of the coconut flow fully generated
-RUN cd /project/zenroom/test/zencode_coconut \
-	&& cp *.zen /project/ \
-	&& ./run_coconut_example.sh zenroom && ./run_petition_example.sh zenroom \
-	&& mkdir -p /project/alice/ && cp -v *.json /project/alice/ \
-	&& ./run_coconut_example.sh zenroom && ./run_petition_example.sh zenroom \
-	&& mkdir -p /project/bob/ && cp -v *.json /project/bob/
+# RUN cd /project/zenroom/test/zencode_coconut \
+#	&& cp *.zen /project/ \
+#	&& ./run_coconut_example.sh zenroom && ./run_petition_example.sh zenroom \
+#	&& mkdir -p /project/alice/ && cp -v *.json /project/alice/ \
+#	&& ./run_coconut_example.sh zenroom && ./run_petition_example.sh zenroom \
+#	&& mkdir -p /project/bob/ && cp -v *.json /project/bob/
 # sha256 sums are checked to mark the difference by the two
 # rounds. Here the JSON encoder order of output is not deterministic
 # and needs to be sorted by the caller
-RUN cat alice/* | sha256sum - > alice.sha256 \
-	&& cat bob/* | sha256sum - > bob.sha256
+#RUN cat alice/* | sha256sum - > alice.sha256 \
+#	&& cat bob/* | sha256sum - > bob.sha256
 
 # petition transaction middleware
 RUN pip3 install 'fastapi[all]' && pip3 install hypercorn
