@@ -1,4 +1,4 @@
-FROM dyne/devuan:beowulf
+FROM registry.gitlab.com/paddy-hack/devuan/slim:beowulf
 ENV debian buster
 
 LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
@@ -20,11 +20,12 @@ RUN apt-get update -y -q \
     python3-toml \
     python3-yaml \
     python3-zmq \
+    python3-grpcio \
     supervisor daemontools net-tools \
-	zsh curl unzip \
+	zsh curl unzip g++\
     && apt-get clean
 
-RUN pip3 install grpcio-tools wheel
+RUN pip3 install wheel
 
 RUN curl https://sh.rustup.rs -sSf > /usr/bin/rustup-init \
  && chmod +x /usr/bin/rustup-init \
