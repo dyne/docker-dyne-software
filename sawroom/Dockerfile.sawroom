@@ -139,6 +139,7 @@ ENV DYNESDK=https://sdk.dyne.org:4443/job \
 	STEM_VERSION=1.6.0 \
 	STEM_GIT=https://git.torproject.org/stem.git
 
+RUN apt-get install -y gnupg2
 
 # Tor repository
 ADD https://raw.githubusercontent.com/DECODEproject/decode-os/master/docker-sdk/tor.pub.asc tor.pub.asc
