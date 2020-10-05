@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/paddy-hack/devuan/slim:beowulf
+FROM dyne/devuan:beowulf
 ENV debian buster
 
 LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
@@ -9,6 +9,7 @@ ENV LANG C.UTF-8
 
 RUN apt-get update -y -q \
 	&& apt-get install -y -q \
+    g++ \
     pkg-config \
     python3 \
     python3-pip \
@@ -23,7 +24,7 @@ RUN apt-get update -y -q \
     python3-grpcio \
     python3-grpc-tools \
     supervisor daemontools net-tools \
-	zsh curl unzip g++ wget git\
+	zsh curl unzip \
     && apt-get clean
 
 RUN pip3 install wheel
@@ -34,11 +35,6 @@ RUN curl https://sh.rustup.rs -sSf > /usr/bin/rustup-init \
 
 ENV PATH=$PATH:/project/sawtooth-core/bin:/protoc3/bin:/project/sawtooth-core/bin:/root/.cargo/bin \
 	CARGO_INCREMENTAL=0
-
-# RUN cargo install sccache
-# ENV RUSTC_WRAPPER=sccache
-
-# RUN ln -s /usr/bin/python3 /usr/bin/python
 
 RUN mkdir -p /etc/sawtooth/keys \
 	&& mkdir -p /var/lib/sawtooth \
@@ -56,11 +52,11 @@ RUN curl -OLsS https://github.com/google/protobuf/releases/download/v3.5.1/proto
 
 # Sawtooth SDK
 # RUN git clone https://github.com/hyperledger/sawtooth-sdk-python.git /project/sawtooth-sdk-python
-RUN wget https://github.com/hyperledger/sawtooth-sdk-python/archive/v1.2.2.tar.gz \
-	&& tar xf v1.2.2.tar.gz && ln -s sawtooth-sdk-python-1.2.2 sawtooth-sdk-python \
+RUN wget https://github.com/hyperledger/sawtooth-sdk-python/archive/v1.2.3.tar.gz \
+	&& tar xf v1.2.3.tar.gz && ln -s sawtooth-sdk-python-1.2.3 sawtooth-sdk-python \
     && /project/sawtooth-sdk-python/bin/protogen \
 	&& pip3 install -e /project/sawtooth-sdk-python \
-	&& rm -rf v1.2.2.tar.gz sawtooth-sdk-python-1.2.2 sawtooth-sdk-python
+	&& rm -rf v1.2.3.tar.gz sawtooth-sdk-python-1.2.3 sawtooth-sdk-python
 
 # Petition transaction processor
 # using latest zenroom-tp-python on git
@@ -68,7 +64,7 @@ RUN git clone https://github.com/DECODEproject/petition-tp-python /project/petit
 	&& pip3 install -e /project/petition-tp-python/src
 
 # install zenroom's cli binary and repo for tests
-RUN wget --no-check-certificate https://sdk.dyne.org:4443/view/zenroom/job/zenroom-static-amd64/lastSuccessfulBuild/artifact/src/zenroom -O /usr/local/bin/zenroom && chmod +x /usr/local/bin/zenroom \
+RUN wget https://files.dyne.org/zenroom/nightly/zenroom-linux-amd64 -O /usr/local/bin/zenroom && chmod +x /usr/local/bin/zenroom \
 	&& git clone https://github.com/decodeproject/zenroom
 
 # ## helper personas for the test units
@@ -91,8 +87,8 @@ ENV PATH=$PATH:/project/petition-tp-python/bin
 RUN apt-get install -y -q libssl-dev libzmq3-dev torsocks
 
 ## Sawtooth Validator
-RUN wget https://github.com/hyperledger/sawtooth-core/archive/v1.3.0.tar.gz \
-	&& tar xvf v1.3.0.tar.gz && ln -s sawtooth-core-1.3.0 sawtooth-core \
+RUN wget https://github.com/hyperledger/sawtooth-core/archive/v1.2.5.tar.gz \
+	&& tar xvf v1.2.5.tar.gz && ln -s sawtooth-core-1.2.5 sawtooth-core \
 	&& cd /project/sawtooth-core && ./bin/protogen \
 	&& cd /project/sawtooth-core/validator && cargo build
 # Install Sawtooth Validator (rust and python)
@@ -120,17 +116,17 @@ RUN cd /project/sawtooth-core/families/block_info/sawtooth_block_info && cargo b
 # # CMD yarn start
 
 
-# RUN git clone https://github.com/hyperledger/sawtooth-devmode.git \
-# 	sawtooth-devmode && cd /project/sawtooth-devmode \
-# 	&& cargo build
-# RUN cp /project/sawtooth-devmode/target/debug/devmode-engine-rust /usr/local/bin
+RUN git clone https://github.com/hyperledger/sawtooth-devmode.git \
+	sawtooth-devmode && cd /project/sawtooth-devmode \
+	&& cargo build
+RUN cp /project/sawtooth-devmode/target/debug/devmode-engine-rust /usr/local/bin
 
-RUN wget https://github.com/hyperledger/sawtooth-pbft/archive/v1.0.0.tar.gz \
-	&& tar xfz v1.0.0.tar.gz && ln -s sawtooth-pbft-1.0.0 sawtooth-pbft \
-    && ls -l \
-	&& cd /project/sawtooth-pbft \
-    && cargo build
-RUN cp /project/sawtooth-pbft/target/debug/pbft-engine /usr/local/bin
+# RUN wget https://github.com/hyperledger/sawtooth-pbft/archive/v1.0.0.tar.gz \
+# 	&& tar xfz v1.0.0.tar.gz && ln -s sawtooth-pbft-1.0.0 sawtooth-pbft \
+#     && ls -l \
+# 	&& cd /project/sawtooth-pbft \
+#     && cargo build
+# RUN cp /project/sawtooth-pbft/target/debug/pbft-engine /usr/local/bin
 # RUN apt-get install -y -q npm
 
 
@@ -139,7 +135,6 @@ ENV DYNESDK=https://sdk.dyne.org:4443/job \
 	STEM_VERSION=1.6.0 \
 	STEM_GIT=https://git.torproject.org/stem.git
 
-RUN apt-get install -y gnupg2
 
 # Tor repository
 ADD https://raw.githubusercontent.com/DECODEproject/decode-os/master/docker-sdk/tor.pub.asc tor.pub.asc
@@ -151,21 +146,21 @@ RUN apt-get install -y -q golang redis-server redis-tools netdata tor nyx
 RUN useradd -ms /bin/zsh sawroom
 
 # Configure Tor Controlport auth
-# ENV	TORDAM_GIT=github.com/decodeproject/tor-dam
-# RUN torpass=`echo "print(OCTET.random(16):url64())" | zenroom` \
-#	&& go get -v -u $TORDAM_GIT/... && cd ~/go/src/github.com/decodeproject/tor-dam \
-#	&& sed -i python/damhs.py -e "s/topkek/$torpass/" \
-#	&& make install && make -C contrib install-init \
-#	&& torpasshash=`HOME=/var/lib/tor setuidgid debian-tor tor --quiet --hash-password "$torpass"` \
-#	&& sed -e 's/User tor/User sawroom/' < $HOME/go/src/$TORDAM_GIT/contrib/torrc > /etc/tor/torrc \
-#	&& sed -e 's/HashedControlPassword .*//' -i /etc/tor/torrc \
-#	&& echo "HashedControlPassword $torpasshash" >> /etc/tor/torrc \
-#	&& sed -e 's/Log notice .*/Log notice file \/var\/log\/tor\/tor.log/' -i /etc/tor/torrc
+ENV	TORDAM_GIT=github.com/decodeproject/tor-dam
+RUN torpass=`echo "print(OCTET.random(16):url64())" | zenroom` \
+	&& go get -v -u $TORDAM_GIT/... && cd ~/go/src/github.com/decodeproject/tor-dam \
+	&& sed -i python/damhs.py -e "s/topkek/$torpass/" \
+	&& make install && make -C contrib install-init \
+	&& torpasshash=`HOME=/var/lib/tor setuidgid debian-tor tor --quiet --hash-password "$torpass"` \
+	&& sed -e 's/User tor/User sawroom/' < $HOME/go/src/$TORDAM_GIT/contrib/torrc > /etc/tor/torrc \
+	&& sed -e 's/HashedControlPassword .*//' -i /etc/tor/torrc \
+	&& echo "HashedControlPassword $torpasshash" >> /etc/tor/torrc \
+	&& sed -e 's/Log notice .*/Log notice file \/var\/log\/tor\/tor.log/' -i /etc/tor/torrc
 
-# RUN chmod -R go-rwx /etc/tor && chown -R sawroom /etc/tor \
-#	&& rm -rf /var/lib/tor/data && chown -R sawroom /var/lib/tor \
-#	&& mkdir -p /var/run/tor && chown -R sawroom /var/run/tor
-#RUN cp /root/go/bin/dam* /usr/bin
+RUN chmod -R go-rwx /etc/tor && chown -R sawroom /etc/tor \
+	&& rm -rf /var/lib/tor/data && chown -R sawroom /var/lib/tor \
+	&& mkdir -p /var/run/tor && chown -R sawroom /var/run/tor
+RUN cp /root/go/bin/dam* /usr/bin
 
 WORKDIR /project
 
