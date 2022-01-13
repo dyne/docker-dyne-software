@@ -1,0 +1,32 @@
+[tarantool_2_8]
+name=EnterpriseLinux-7 - Tarantool
+baseurl=https://download.tarantool.org/tarantool/2.8/el/7/x86_64/
+gpgkey=https://download.tarantool.org/tarantool/2.8/gpgkey
+repo_gpgcheck=1
+gpgcheck=0
+enabled=1
+priority=1
+
+[tarantool_2_8-source]
+name=EnterpriseLinux-7 - Tarantool Sources
+baseurl=https://download.tarantool.org/tarantool/2.8/el/7/SRPMS
+gpgkey=https://download.tarantool.org/tarantool/2.8/gpgkey
+repo_gpgcheck=1
+gpgcheck=0
+priority=1
+
+[tarantool_modules]
+name=EnterpriseLinux-7 - Tarantool
+baseurl=https://download.tarantool.org/tarantool/modules/el/7/x86_64/
+gpgkey=https://download.tarantool.org/tarantool/modules/gpgkey
+repo_gpgcheck=1
+gpgcheck=0
+enabled=1
+priority=1
+
+[tarantool_modules-source]
+name=EnterpriseLinux-7 - Tarantool Sources
+baseurl=https://download.tarantool.org/tarantool/modules/el/7/SRPMS
+gpgkey=https://download.tarantool.org/tarantool/modules/gpgkey
+repo_gpgcheck=1
+gpgcheck=0

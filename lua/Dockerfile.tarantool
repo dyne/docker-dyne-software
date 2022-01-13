@@ -1,0 +1,23 @@
+# For use as base image in tarantool cartridges
+ARG centos
+
+FROM centos:$centos as builder
+RUN yum install -y epel-release
+RUN yum repolist -y
+RUN yum install -y gcc cmake3 which git wget luajit-devel make
+RUN alternatives --install /usr/local/bin/cmake cmake /usr/bin/cmake3 10 --family cmake
+
+RUN git clone https://github.com/dyne/lua-zenroom \
+    && cd lua-zenroom && sed -i 's/lua5.1/luajit-2.1/' src/Makefile \
+    && make && PREFIX=/usr make install
+
+FROM centos:$centos
+
+#COPY tarantool_2_8.repo /etc/yum.repos.d/tarantool_2_8.repo
+#RUN yum install -y tarantool && yum clean all -y
+
+RUN mkdir -p /usr/share/tarantool/zenroom
+COPY --from=builder /usr/lib/lua/5.1/libzenroom.so /usr/lib64/tarantool/libzenroom.so
+COPY --from=builder /usr/share/lua/5.1/zenroom/* /usr/share/tarantool/zenroom/
+CMD bash
+
