@@ -7,6 +7,7 @@ RUN yum repolist -y
 RUN yum install -y gcc cmake3 which git wget luajit-devel make
 RUN alternatives --install /usr/local/bin/cmake cmake /usr/bin/cmake3 10 --family cmake
 
+COPY lua-zenroom.head .
 RUN git clone https://github.com/dyne/lua-zenroom \
     && cd lua-zenroom && sed -i 's/lua5.1/luajit-2.1/' src/Makefile \
     && make && PREFIX=/usr make install
