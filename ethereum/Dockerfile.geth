@@ -1,0 +1,26 @@
+# Build solidity's solc and geth
+
+ARG ALPINE_VERSION
+ARG GO_VERSION
+
+FROM golang:$GO_VERSION-alpine$ALPINE_VERSION
+
+LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
+	  homepage="https://eth.dyne.org"
+
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+ENV GO111MODULE on
+ARG GETH_VERSION
+ENV GETH_VERSION $GETH_VERSION
+
+# RUN apk add --no-cache gcc g++ musl-dev linux-headers git make cmake \
+#     boost-dev boost-static curl
+RUN apk add --no-cache git gcc musl-dev make cmake curl linux-headers
+RUN go get -d github.com/ethereum/go-ethereum@v$GETH_VERSION \
+    && cd pkg/mod/github.com/ethereum/go-ethereum@v$GETH_VERSION \
+    && go install ./...
+
+# COPY --from=builder /go/bin/* /usr/local/bin/
+# COPY --from=builder /usr/local/bin/solc /usr/local/bin
+CMD bash

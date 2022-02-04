@@ -1,0 +1,27 @@
+# Build solidity's solc and geth
+
+ARG ALPINE_VERSION
+
+FROM alpine:3.15
+
+LABEL maintainer="Denis Roio <jaromil@dyne.org>" \
+	  homepage="https://eth.dyne.org"
+
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+ARG SOLC_VERSION
+ENV SOLC_VERSION $SOLC_VERSION
+
+RUN apk add --no-cache gcc g++ musl-dev linux-headers git make cmake \
+    boost-dev boost-static curl
+
+RUN git clone https://github.com/ethereum/solidity \
+    && cd solidity && git checkout tags/v$SOLC_VERSION \
+    && touch prerelease.txt && mkdir build && cd build \
+    && cmake .. -DCMAKE_BUILD_TYPE=Release -DTESTS=0 -DSTATIC_LINKING=1 \
+    && make solc -j4 && make install -C solc && strip /usr/local/bin/solc
+
+# COPY --from=builder /go/bin/* /usr/local/bin/
+# COPY --from=builder /usr/local/bin/solc /usr/local/bin
+CMD bash
