@@ -1,4 +1,4 @@
-ARG NODE_VERSION
+ARG NODE_VERSION=16
 # Importing node12 docker image
 FROM node:$NODE_VERSION-alpine
 
