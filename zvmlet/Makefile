@@ -1,6 +1,3 @@
-NODE_VERSION := 16
-ZVMLET_VERSION := 1.0.0
-
 .DEFAULT_GOAL := help
 .PHONY: help
 help: ## ℹ️ Show this help message
@@ -11,7 +8,7 @@ start: run
 run: ## 🚀 Run all the components quickly
 	@echo "🚀 Launching the zvmlet"
 	@echo ""
-	@echo "🚨 Please don't forget to populate ./contracts before launching the service"
+	@echo "🚨 Please don't forget to populate ./contracts with your .zen contracts"
 	docker compose up -d
 
 logs: ## 📋 Show the logs of the containers
