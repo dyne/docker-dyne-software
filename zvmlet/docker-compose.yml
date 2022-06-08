@@ -1,0 +1,13 @@
+version: "3.3"
+
+services:
+  zvmlet:
+    ports:
+      - 3000:3000
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_VERSION: "16"
+    volumes:
+      - ./contracts:/restroom-mw/contracts
