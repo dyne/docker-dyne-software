@@ -7,7 +7,7 @@ RUN apk add git python3 make g++
 
 # Installing restroom
 RUN yarn create restroom --all restroom-mw
-WORKDIR /restroom-mw
+WORKDIR /app
 
 # Configure restroom
 ENV HTTP_PORT=3000
