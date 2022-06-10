@@ -10,4 +10,4 @@ services:
       args:
         NODE_VERSION: "16"
     volumes:
-      - ./contracts:/restroom-mw/contracts
+      - ./contracts:/app/contracts
