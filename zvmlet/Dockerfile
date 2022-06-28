@@ -2,12 +2,13 @@ ARG NODE_VERSION=16
 # Importing node12 docker image
 FROM node:$NODE_VERSION-alpine
 
+WORKDIR /app
+
 # Add dependencies
 RUN apk add git python3 make g++
 
 # Installing restroom
-RUN yarn create restroom --all restroom-mw
-WORKDIR /app
+RUN yarn create restroom -a .
 
 # Configure restroom
 ENV HTTP_PORT=3000
