@@ -1,10 +1,10 @@
 
 # SOLC version 0.8.11
 
-SOLC_VERSION   := 0.8.12
-GETH_VERSION   := 1.10.17
+SOLC_VERSION   := 0.8.14
+GETH_VERSION   := 1.10.21
 ALPINE_VERSION := 3.15
-GO_VERSION     := 1.18
+GO_VERSION     := 1.19
 
 # independent containers, mixed together later in fabchain's docker
 all: solc geth
