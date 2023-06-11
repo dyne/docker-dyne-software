@@ -1,0 +1,15 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: dyne-mariadb
+    restart: unless-stopped
+    volumes:
+      - ./data:/var/lib/mysql:rw
+    environment:
+      - MYSQL_ROOT_PASSWORD=toor
+      - MYSQL_DATABASE=db
+      - MYSQL_USER=luther
+      - MYSQL_PASSWORD=luther
+    command: --innodb-flush-method=fsync --transaction-isolation=READ-COMMITTED --binlog-format=ROW
+    ports: 
+      - 3306:3306
